@@ -146,7 +146,7 @@ umin = -1.8;
 umax = -1;
 figure
 set(gcf,'Position',[100 300 width height])
-contourf(x,y,zeta2(:,:),200,'LineStyle','none')
+contourf(x,y,zeta(:,:),200,'LineStyle','none')
 yticks([-1, 0, 1])
 colormap(jet)
 clim([umin,umax])
