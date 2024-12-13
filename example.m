@@ -70,12 +70,12 @@ finc = 1;
 fLoop = fstart:finc:fend;
 %% Preallocate space for Lagrangian Quantities
 sigma_ftle = zeros([ROInx, ROIny, length(fLoop)]);
-cseIntegral = zeros([ROInx, ROIny, length(fLoop)]);
+msIntegral = zeros([ROInx, ROIny, length(fLoop)]);
 deltaInfty = zeros([ROInx, ROIny, length(fLoop)]);
 save('MSdata.mat','sigma_ftle','cseIntegral','deltaInfty','dt','tLength','xMaxROI','xMinROI','yMaxROI','yMinROI','fstart','fend','fLoop','intMethod')
 %% Compute Mode Sensitivity Quantities. Runs for a Long time
 for t0 = fstart
-    [sigma_ftle(:, :, t0-fLoop(1)+1), cseIntegral(:, :, t0-fLoop(1)+1), deltaInfty(:, :, t0-fLoop(1)+1), xPos, yPos] = modeSensitivity(uf, vf, ...
+    [sigma_ftle(:, :, t0-fLoop(1)+1), msIntegral(:, :, t0-fLoop(1)+1), deltaInfty(:, :, t0-fLoop(1)+1), xPos, yPos] = modeSensitivity(uf, vf, ...
         ug, vg,...
         xVec, yVec, ...
         t0, tLength, tStep, fstart, dt, ...
@@ -83,13 +83,13 @@ for t0 = fstart
         ROInx, ROIny, intMethod, ...
         'extrap',true,'ufExtrap', ufExtrap, 'vfExtrap', vfExtrap, ...
         'ugExtrap', ugExtrap, 'vgExtrap', vgExtrap);
-    save('MSdata.mat','sigma_ftle','cseIntegral','deltaInfty','xPos','yPos',"-append")
+    save('MSdata.mat','sigma_ftle','msIntegral','deltaInfty','xPos','yPos',"-append")
 end
 %% Compute Lagrangian Fields, FTLE, MS, and Zeta
 FTLE = (1/abs(tLength*dt))*log(sigma_ftle);
-MS = (deltaInfty.*cseIntegral).^2;
+MS = (deltaInfty.*msIntegral).^2;
 MS_scaled = log(MS)/abs(2*tLength*dt);
-zeta = (1/abs(tLength*dt))*log(deltaInfty.*cseIntegral./sigma_ftle);
+zeta = (1/abs(tLength*dt))*log(deltaInfty.*msIntegral./sigma_ftle);
 x=xPos(:,:,1);
 y=yPos(:,:,1);
 %% Plot the Finite-Time Lyapunov Exponent Field FTLE
